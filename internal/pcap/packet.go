@@ -537,7 +537,19 @@ func ParsePacket(packet gopacket.Packet) (*PacketIndicator, error) {
 	// Parse transport layer
 	if transportLayer != nil {
 		switch t := transportLayer.LayerType(); t {
-		case layers.LayerTypeTCP, layers.LayerTypeUDP:
+		case layers.LayerTypeTCP:
+			err := transportLayer.(*layers.TCP).SetNetworkLayerForChecksum(networkLayer.(*layers.IPv4))
+			if err != nil {
+				fmt.Println("test1:", err)
+				return nil, err
+			}
+			break
+		case layers.LayerTypeUDP:
+			err := transportLayer.(*layers.UDP).SetNetworkLayerForChecksum(networkLayer.(*layers.IPv4))
+			if err != nil {
+				fmt.Println("test2:", err)
+				return nil, err
+			}
 			break
 		case layers.LayerTypeICMPv4:
 			var err error

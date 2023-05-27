@@ -247,7 +247,7 @@ func CreateFragmentPackets(linkLayer, networkLayer, transportLayer gopacket.Laye
 	case layers.LayerTypeIPv4:
 		networkPayload, err := Serialize(transportLayer.(gopacket.SerializableLayer), payload)
 		if err != nil {
-			return nil, fmt.Errorf("serialize: %w", err)
+			return nil, fmt.Errorf("serialize3: %w", err)
 		}
 
 		return CreateIPv4FragmentPackets(linkLayer, networkLayer.(*layers.IPv4), networkPayload, fragment)
@@ -267,7 +267,7 @@ func CreateIPv4FragmentPackets(linkLayer gopacket.Layer, ipv4Layer *layers.IPv4,
 	// Serialize intermediate headers
 	ipv4LayerData, err = Serialize(ipv4Layer)
 	if err != nil {
-		return nil, fmt.Errorf("serialize: %w", err)
+		return nil, fmt.Errorf("serialize5: %w", err)
 	}
 
 	fragments = make([][]byte, 0)
@@ -317,7 +317,7 @@ func CreateIPv4FragmentPackets(linkLayer gopacket.Layer, ipv4Layer *layers.IPv4,
 				data, err = Serialize(linkLayer.(gopacket.SerializableLayer), newIPv4Layer, payload[i:i+length])
 			}
 			if err != nil {
-				return nil, fmt.Errorf("serialize: %w", err)
+				return nil, fmt.Errorf("serialize4: %w", err)
 			}
 
 			fragments = append(fragments, data)
@@ -358,11 +358,11 @@ func CreateTCPSegmentPackets(linkLayer gopacket.Layer, networkLayer gopacket.Net
 	// Serialize intermediate headers
 	networkLayerData, err = Serialize(networkLayer.(gopacket.SerializableLayer))
 	if err != nil {
-		return nil, fmt.Errorf("serialize: %w", err)
+		return nil, fmt.Errorf("serialize6: %w", err)
 	}
 	tcpLayerData, err = SerializeRaw(tcpLayer)
 	if err != nil {
-		return nil, fmt.Errorf("serialize: %w", err)
+		return nil, fmt.Errorf("serialize7: %w", err)
 	}
 
 	fragments = make([][]byte, 0)
@@ -418,7 +418,7 @@ func CreateTCPSegmentPackets(linkLayer gopacket.Layer, networkLayer gopacket.Net
 					payload[i:i+length])
 			}
 			if err != nil {
-				return nil, fmt.Errorf("serialize: %w", err)
+				return nil, fmt.Errorf("serialize2: %w", err)
 			}
 
 			fragments = append(fragments, data)
@@ -439,7 +439,7 @@ func CreateTCPSegmentPackets(linkLayer gopacket.Layer, networkLayer gopacket.Net
 			data, err = Serialize(linkLayer.(gopacket.SerializableLayer), networkLayer.(gopacket.SerializableLayer), tcpLayer, payload)
 		}
 		if err != nil {
-			return nil, fmt.Errorf("serialize: %w", err)
+			return nil, fmt.Errorf("serialize1: %w", err)
 		}
 
 		fragments = append(fragments, data)

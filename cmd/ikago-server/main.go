@@ -599,6 +599,7 @@ func open() error {
 		listener := listeners[i]
 		go func() {
 			for {
+				// 客户端链接
 				conn, err := listener.Accept()
 				if err != nil {
 					if isClosed {
@@ -656,6 +657,7 @@ func open() error {
 
 	go func() {
 		for cab := range c {
+			// 处理客户端请求
 			err := handleListen(cab.Bytes, cab.Conn)
 			if err != nil {
 				log.Errorln(fmt.Errorf("handle listen in address %s: %w", cab.Conn.LocalAddr().String(), err))
@@ -716,6 +718,7 @@ func handleListen(contents []byte, conn net.Conn) error {
 	}
 
 	// Parse embedded packet
+	// 解析网络层数据
 	embIndicator, err = pcap.ParseEmbPacket(contents)
 	if err != nil {
 		return fmt.Errorf("parse embedded packet: %w", err)
@@ -895,11 +898,12 @@ func handleListen(contents []byte, conn net.Conn) error {
 	// Fragment
 	fragments, err = pcap.CreateFragmentPackets(newLinkLayer, newNetworkLayer, newTransportLayer, embIndicator.Payload(), fragment)
 	if err != nil {
-		return fmt.Errorf("fragment: %w", err)
+		return fmt.Errorf("fragment0: %w", err)
 	}
 
 	// Write packet data
 	for i, fragment := range fragments {
+		// 组装数据，写到网关，网关转发到目标服务器
 		_, err = upConn.Write(fragment)
 		if err != nil {
 			return fmt.Errorf("write: %w", err)
@@ -964,6 +968,7 @@ func handleListen(contents []byte, conn net.Conn) error {
 				conn:   conn,
 			}
 			natLock.Lock()
+			// 记录client conn
 			nat[guide] = ni
 			natLock.Unlock()
 		}
@@ -1020,6 +1025,7 @@ func handleUpstream(packet gopacket.Packet) error {
 		Protocol: indicator.TransportLayer().LayerType(),
 	}
 	natLock.RLock()
+	// client 连接
 	ni, ok := nat[guide]
 	natLock.RUnlock()
 	if !ok {

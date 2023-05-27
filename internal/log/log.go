@@ -117,7 +117,7 @@ func Info(v ...interface{}) {
 	outLogger.output(fmt.Sprint(v...))
 }
 
-// Infoln prints message to the stdout. Arguments are handled in the manner of fmt.Println.
+// Infoln prints message to the stdout. Arguments are handled in the manner of fmt.Println.x
 func Infoln(v ...interface{}) {
 	outLogger.output(fmt.Sprintln(v...))
 }

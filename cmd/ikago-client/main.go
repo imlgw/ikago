@@ -611,6 +611,8 @@ func open() error {
 		filter = filter + fmt.Sprintf(" || (arp[6:2] = 1 && %s)", s)
 	}
 
+	fmt.Println(filter)
+
 	// Handles for listening
 	for _, dev := range listenDevs {
 		var (
@@ -941,7 +943,7 @@ func handleUpstream(contents []byte) error {
 	// Fragment
 	fragments, err = pcap.CreateFragmentPackets(newLinkLayer, embIndicator.NetworkLayer(), embIndicator.TransportLayer(), gopacket.Payload(embIndicator.Payload()), fragment)
 	if err != nil {
-		return fmt.Errorf("fragment: %w", err)
+		return fmt.Errorf("fragment1: %w", err)
 	}
 
 	// Write packet data

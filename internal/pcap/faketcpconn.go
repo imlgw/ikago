@@ -61,6 +61,7 @@ func DialFakeTCP(srcDev, dstDev *Device, srcPort uint16, dstAddr *net.TCPAddr, c
 		Port: int(srcPort),
 	}
 
+	//
 	conn, err := dialFakeTCPPassive(srcDev, dstDev, srcPort, dstAddr, crypt, mtu)
 	if err != nil {
 		return nil, &net.OpError{
@@ -115,6 +116,7 @@ func dialFakeTCPPassive(srcDev, dstDev *Device, srcPort uint16, dstAddr *net.TCP
 		return nil, fmt.Errorf("parse filter %s: %w", dstIP, err)
 	}
 
+	// 监听tcp流量，目标端口为本机端口，源ip和端口为请求的dest ---> 从dest进来的流量
 	rawConn, err := CreateRawConn(srcDev, dstDev, fmt.Sprintf("ip && ((tcp && dst port %d && %s) || ((ip[6:2] & 0x1fff) != 0 && %s))", srcAddr.Port, filter, filter2))
 	if err != nil {
 		return nil, fmt.Errorf("create raw connection: %w", err)
